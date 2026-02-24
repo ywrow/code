@@ -1,23 +1,21 @@
 #define int long long
 
 struct bas{
-    int p[63],cnt;
+    int b[63],cnt;
     bool z;
     
     bas(){
-        memset(p,0,sizeof(p));
+        memset(b,0,sizeof(b));
         cnt=0;z=0;
     }
-    
-    // 原插入逻辑封装，供运算符调用
     bool ins(int x){
         for(int i=62;i>=0;i--){
             if(x&(1LL<<i)){
-                if(!p[i]){
-                    p[i]=x;cnt++;
+                if(!b[i]){
+                    b[i]=x;cnt++;
                     return 1;
                 }
-                x^=p[i];
+                x^=b[i];
             }
         }
         z=1;return 0;
@@ -31,19 +29,19 @@ struct bas{
     
     // += 合并线性基
     bas& operator +=(const bas& oth){
-        for(int i=0;i<=62;i++) if(oth.p[i]) ins(oth.p[i]);
+        for(int i=0;i<=62;i++) if(oth.b[i]) ins(oth.b[i]);
         if(oth.z) z=1;
         return *this;
     }
     
-    // + 插入 (返回副本)
+    // + 插入
     bas operator +(int x) const {
         bas res=*this;
         res+=x;
         return res;
     }
     
-    // + 合并 (返回副本)
+    // + 合并
     bas operator +(const bas& oth) const {
         bas res=*this;
         res+=oth;
@@ -52,20 +50,20 @@ struct bas{
     
     int qmax(){
         int res=0;
-        for(int i=62;i>=0;i--) res=max(res,res^p[i]);
+        for(int i=62;i>=0;i--) res=max(res,res^b[i]);
         return res;
     }
     
     int qmin(){
         if(z) return 0;
-        for(int i=0;i<=62;i++) if(p[i]) return p[i];
+        for(int i=0;i<=62;i++) if(b[i]) return b[i];
         return 0;
     }
     
     bool cx(int x){
         for(int i=62;i>=0;i--){
             if(x&(1LL<<i)){
-                if(p[i]) x^=p[i];
+                if(b[i]) x^=b[i];
                 else return 0;
             }
         }
@@ -82,7 +80,8 @@ struct bas{
         k-=z;
         if(!k) return 0;
         int tmp[65],t_cnt=0,res=0;
-        int cp[63]; memcpy(cp,p,sizeof(p));
+        int cp[63];
+		memcpy(cp,b,sizeof(b));
         for(int i=0;i<=62;i++){
             for(int j=i-1;j>=0;j--) if(cp[i]&(1LL<<j)) cp[i]^=cp[j];
             if(cp[i]) tmp[t_cnt++]=cp[i];
@@ -95,7 +94,7 @@ struct bas{
     int size(){return cnt;}
     
     void clear(){
-        memset(p,0,sizeof(p));
+        memset(b,0,sizeof(b));
         cnt=0;z=0;
     }
 };
