@@ -8,7 +8,12 @@ struct bas{
         memset(b,0,sizeof(b));
         cnt=0;z=0;
     }
-    bool ins(int x){
+    
+    int operator [](int x){
+    	return b[x];
+	}
+	
+    bool insert(int x){
         for(int i=62;i>=0;i--){
             if(x&(1LL<<i)){
                 if(!b[i]){
@@ -21,30 +26,26 @@ struct bas{
         z=1;return 0;
     }
     
-    // += 插入元素
     bas& operator +=(int x){
-        ins(x);
+        insert(x);
         return *this;
     }
     
-    // += 合并线性基
-    bas& operator +=(const bas& oth){
-        for(int i=0;i<=62;i++) if(oth.b[i]) ins(oth.b[i]);
-        if(oth.z) z=1;
+    bas& operator +=(const bas& x){
+        for(int i=0;i<=62;i++) if(x.b[i]) insert(x.b[i]);
+        if(x.z) z=1;
         return *this;
     }
     
-    // + 插入
     bas operator +(int x) const {
         bas res=*this;
         res+=x;
         return res;
     }
     
-    // + 合并
-    bas operator +(const bas& oth) const {
+    bas operator +(const bas& x) const {
         bas res=*this;
-        res+=oth;
+        res+=x;
         return res;
     }
     
