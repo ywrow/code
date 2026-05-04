@@ -16,7 +16,7 @@ struct treap{
 		t[tot].ls=t[tot].rs=0;
 		return tot;
 	}
-	void push_up(int u){
+	void pushup(int u){
 		if(!u)return;
 		t[u].siz=t[t[u].ls].siz+t[t[u].rs].siz+1;
 	}
@@ -32,32 +32,32 @@ struct treap{
 			R=u;
 			splitv(t[u].ls,v,L,t[u].ls);
 		}
-		push_up(u);
+		pushup(u);
 	}
 	void splitr(int u,int k,int &L,int &R){
 		if(!u){
 			L=R=0;
 			return;
 		}
-		int ls_siz=t[t[u].ls].siz;
-		if(k<=ls_siz){
+		int x=t[t[u].ls].siz;
+		if(k<=x){
 			R=u;
 			splitr(t[u].ls,k,L,t[R].ls);
 		}else{
 			L=u;
-			splitr(t[u].rs,k-ls_siz-1,t[L].rs,R);
+			splitr(t[u].rs,k-x-1,t[L].rs,R);
 		}
-		push_up(u);
+		pushup(u);
 	}
 	int merge(int L,int R){
 		if(!L||!R)return L+R;
 		if(t[L].r<t[R].r){
 			t[L].rs=merge(t[L].rs,R);
-			push_up(L);
+			pushup(L);
 			return L;
 		}else{
 			t[R].ls=merge(L,t[R].ls);
-			push_up(R);
+			pushup(R);
 			return R;
 		}
 	}
@@ -76,7 +76,7 @@ struct treap{
 			root=z;
 		}
 		splitv(u,v,t[z].ls,t[z].rs);
-		push_up(z);
+		pushup(z);
 	}
 	void del(int v){
 		int u=root,f=0;
@@ -87,12 +87,12 @@ struct treap{
 			else u=t[u].rs;
 		}
 		if(u){
-			int new_sub=merge(t[u].ls,t[u].rs);
+			int newnode=merge(t[u].ls,t[u].rs);
 			if(f){
-				if(v<t[f].v)t[f].ls=new_sub;
-				else t[f].rs=new_sub;
+				if(v<t[f].v)t[f].ls=newnode;
+				else t[f].rs=newnode;
 			}else{
-				root=new_sub;
+				root=newnode;
 			}
 		}
 	}
@@ -106,11 +106,11 @@ struct treap{
 	int queryv(int k){
 		int u=root;
 		while(u){
-			int ls_siz=t[t[u].ls].siz;
-			if(k<=ls_siz)u=t[u].ls;
-			else if(k==ls_siz+1)return t[u].v;
+			int x=t[t[u].ls].siz;
+			if(k<=x)u=t[u].ls;
+			else if(k==x+1)return t[u].v;
 			else{
-				k-=(ls_siz+1);
+				k-=(x+1);
 				u=t[u].rs;
 			}
 		}
